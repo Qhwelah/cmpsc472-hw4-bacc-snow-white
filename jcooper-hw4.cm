@@ -1,0 +1,23 @@
+// -------------------------------- //
+// Name : Joseph Cooper             //
+// Email: jdc6281@psu.edu           //
+// Class: CMPSC 472-002, Fall 2025  //
+// -------------------------------- //
+
+binarysem testsem;
+
+void sampleFunc(int i){
+    cout << "Prog number " << i << " running!" << endl;
+}
+
+main(){
+    initialsem(testsem, 1);
+
+    cout << "Program running!" << endl;
+
+    cobegin {
+        sampleFunc(1);
+        sampleFunc(2);
+        sampleFunc(3);
+    }
+}
