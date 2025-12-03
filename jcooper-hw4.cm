@@ -10,6 +10,13 @@ binarysem testsem;
 // Mutex semaphors
 binarysem print_mux;
 
+// Declare string variables
+string[20] dOne;
+string[20] dTwo;
+string[20] dThree;
+string[20] progNumStr;
+string[20] runStatStr;
+
 
 void printFunc(string strOne, string strTwo, string strThree)
 {
@@ -34,8 +41,7 @@ void printFunc(string strOne, string strTwo, string strThree)
 
 void sampleFunc(string progNum)
 {
-    string[20] progNumStr;
-    string[20] runStatStr;
+    // Initialize string values
     stringCopy(progNumStr, "prog number");
     stringCopy(runStatStr, "running!");
     
@@ -50,10 +56,7 @@ main()
     initialsem(testsem, 1);
     initialsem(print_mux, 1);
 
-    // Initialize strings
-    string[20] dOne;
-    string[20] dTwo;
-    string[20] dThree;
+    // Initialize string values
     stringCopy(dOne, "1");
     stringCopy(dTwo, "2");
     stringCopy(dThree, "3");
