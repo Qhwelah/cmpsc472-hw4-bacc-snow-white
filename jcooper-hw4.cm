@@ -8,16 +8,19 @@ binarysem testsem;
 
 binarysem print_mux;
 
-void printFunc(string[20] strOne, string[20] strTwo, string[20] strThree){
+void printFunc(string[20] strOne, string[20] strTwo, string[20] strThree)
+{
     // Wait for CS access
     wait(print_mux);
 
     // In Print Critical Section
     cout << strOne;
-    //if(strTwo){
+    //if(strTwo)
+    //{
     cout << " " << strTwo;
     //}
-    //if(strThree){
+    //if(strThree)
+    //{
     cout << " " << strThree;
     //}
     cout << endl;
@@ -26,12 +29,14 @@ void printFunc(string[20] strOne, string[20] strTwo, string[20] strThree){
     signal(print_mux);
 }
 
-void sampleFunc(string[1] progNum){
+void sampleFunc(string[1] progNum)
+{
     //cout << "Prog number " << i << " running!" << endl;
     printFunc("prog number", progNum, "running!");
 }
 
-main(){
+main()
+{
     initialsem(testsem, 1);
     initialsem(print_mux, 1);
 
