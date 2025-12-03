@@ -45,9 +45,12 @@ void sampleFunc(string progNum)
     stringCopy(progNumStr, "prog number");
     stringCopy(runStatStr, "running!");
     
+    string[20] tmp;
+    stringCopy(tmp, progNum);
+    
     //cout << "Prog number " << i << " running!" << endl;
     //printFunc("prog number", progNum, "running!");
-    printFunc(progNumStr, progNum, runStatStr);
+    printFunc(progNumStr, tmp, runStatStr);
 }
 
 main()
