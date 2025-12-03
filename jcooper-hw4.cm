@@ -36,8 +36,8 @@ void sampleFunc(string progNum)
 {
     string[20] progNumStr;
     string[20] runStatStr;
-    stringCopy(progNumStr, 'prog number');
-    stringCopy(runStatStr, 'running!');
+    stringCopy(progNumStr, "prog number");
+    stringCopy(runStatStr, "running!");
     
     //cout << "Prog number " << i << " running!" << endl;
     //printFunc("prog number", progNum, "running!");
@@ -54,9 +54,9 @@ main()
     string[20] dOne;
     string[20] dTwo;
     string[20] dThree;
-    stringCopy(dOne, '1');
-    stringCopy(dTwo, '2');
-    stringCopy(dThree, '3');
+    stringCopy(dOne, "1");
+    stringCopy(dTwo, "2");
+    stringCopy(dThree, "3");
 
     cout << "Program running!" << endl;
 
