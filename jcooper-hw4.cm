@@ -6,18 +6,40 @@
 
 binarysem testsem;
 
-void sampleFunc(int i){
-    cout << "Prog number " << i << " running!" << endl;
+binarysem print_mux;
+
+void printFunc(string[20] strOne, string[20] strTwo, string[20] strThree){
+    // Wait for CS access
+    wait(print_mux);
+
+    // In Print Critical Section
+    cout << strOne;
+    if(strTwo != ""){
+        cout << " " << strTwo;
+    }
+    if(strThree != ""){
+        cout << " " << strThree;
+    }
+    cout << endl;
+
+    // End CS
+    signal(print_mux);
+}
+
+void sampleFunc(string[1] progNum){
+    //cout << "Prog number " << i << " running!" << endl;
+    printFunc("prog number", progNum, "running!");
 }
 
 main(){
     initialsem(testsem, 1);
+    initialsem(print_mux, 1);
 
     cout << "Program running!" << endl;
 
     cobegin {
-        sampleFunc(1);
-        sampleFunc(2);
-        sampleFunc(3);
+        sampleFunc("1");
+        sampleFunc("2");
+        sampleFunc("3");
     }
 }
