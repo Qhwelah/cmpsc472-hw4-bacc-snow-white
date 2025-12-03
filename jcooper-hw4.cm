@@ -14,12 +14,12 @@ void printFunc(string[20] strOne, string[20] strTwo, string[20] strThree){
 
     // In Print Critical Section
     cout << strOne;
-    if(strTwo != ""){
-        cout << " " << strTwo;
-    }
-    if(strThree != ""){
-        cout << " " << strThree;
-    }
+    //if(strTwo){
+    cout << " " << strTwo;
+    //}
+    //if(strThree){
+    cout << " " << strThree;
+    //}
     cout << endl;
 
     // End CS
