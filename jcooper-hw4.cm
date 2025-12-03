@@ -4,11 +4,14 @@
 // Class: CMPSC 472-002, Fall 2025  //
 // -------------------------------- //
 
+// Regular flow semaphors
 binarysem testsem;
 
+// Mutex semaphors
 binarysem print_mux;
 
-void printFunc(string[20] strOne, string[20] strTwo, string[20] strThree)
+
+void printFunc(string strOne, string strTwo, string strThree)
 {
     // Wait for CS access
     wait(print_mux);
@@ -29,22 +32,37 @@ void printFunc(string[20] strOne, string[20] strTwo, string[20] strThree)
     signal(print_mux);
 }
 
-void sampleFunc(string[1] progNum)
+void sampleFunc(string progNum)
 {
+    string[20] progNumStr;
+    string[20] runStatStr;
+    stringCopy(progNumStr, 'prog number');
+    stringCopy(runStatStr, 'running!');
+    
     //cout << "Prog number " << i << " running!" << endl;
-    printFunc("prog number", progNum, "running!");
+    //printFunc("prog number", progNum, "running!");
+    printFunc(progNumStr, progNum, runStatStr);
 }
 
 main()
 {
+    // Initialize semaphores
     initialsem(testsem, 1);
     initialsem(print_mux, 1);
+
+    // Initialize strings
+    string[20] dOne;
+    string[20] dTwo;
+    string[20] dThree;
+    stringCopy(dOne, '1');
+    stringCopy(dTwo, '2');
+    stringCopy(dThree, '3');
 
     cout << "Program running!" << endl;
 
     cobegin {
-        sampleFunc("1");
-        sampleFunc("2");
-        sampleFunc("3");
+        sampleFunc(dOne);
+        sampleFunc(dTwo);
+        sampleFunc(dThree);
     }
 }
