@@ -18,39 +18,48 @@ string[20] progNumStr;
 string[20] runStatStr;
 
 
-void printFunc(string strOne, string strTwo, string strThree)
+// Print helper temp
+string[20] printOne;
+string[20] printTwo;
+string[20] printThree;
+
+//void printFunc(string strOne, string strTwo, string strThree)
+void printFunc()
 {
     // Wait for CS access
-    wait(print_mux);
+    //wait(print_mux);
 
     // In Print Critical Section
-    cout << strOne;
+    cout << printOne;
     //if(strTwo)
     //{
-    cout << " " << strTwo;
+    cout << " " << printTwo;
     //}
     //if(strThree)
     //{
-    cout << " " << strThree;
+    cout << " " << printThree;
     //}
     cout << endl;
 
     // End CS
-    signal(print_mux);
+    //signal(print_mux);
 }
 
 void sampleFunc(string progNum)
 {
     // Initialize string values
-    stringCopy(progNumStr, "prog number");
-    stringCopy(runStatStr, "running!");
+    wait(print_mux);
+    stringCopy(printOne, "prog number");
+    stringCopy(printTwo, progNum);
+    stringCopy(printThree, "running!");
     
-    string[20] tmp;
-    stringCopy(tmp, progNum);
+    //stringCopy(tmp, progNum);
     
     //cout << "Prog number " << i << " running!" << endl;
     //printFunc("prog number", progNum, "running!");
-    printFunc(progNumStr, tmp, runStatStr);
+    //printFunc(progNumStr, tmp, runStatStr);
+    print();
+    signal(print_mux);
 }
 
 main()
@@ -63,6 +72,12 @@ main()
     stringCopy(dOne, "1");
     stringCopy(dTwo, "2");
     stringCopy(dThree, "3");
+
+    // Initialize print variables
+    stringCopy(printOne, "");
+    stringCopy(printTwo, "");
+    stringCopy(printThree, "");
+
 
     cout << "Program running!" << endl;
 
