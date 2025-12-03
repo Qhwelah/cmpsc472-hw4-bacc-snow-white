@@ -14,8 +14,8 @@ binarysem print_mux;
 string[20] dOne;
 string[20] dTwo;
 string[20] dThree;
-string[20] progNumStr;
-string[20] runStatStr;
+// string[20] progNumStr;
+// string[20] runStatStr;
 
 
 // Print helper temp
@@ -23,42 +23,47 @@ string[20] printOne;
 string[20] printTwo;
 string[20] printThree;
 
-//void printFunc(string strOne, string strTwo, string strThree)
+// Print mutex is handled in calling functions
 void printFunc()
 {
-    // Wait for CS access
-    //wait(print_mux);
+    if(stringLength(printOne) > 0)
+    {
+        cout << printOne;
+    }
 
-    // In Print Critical Section
-    cout << printOne;
-    //if(strTwo)
-    //{
-    cout << " " << printTwo;
-    //}
-    //if(strThree)
-    //{
-    cout << " " << printThree;
-    //}
+    if(stringLength(printTwo) > 0)
+    {
+        cout << " " << printTwo;
+    }
+
+    if(stringLength(printThree) > 0)
+    {
+        cout << " " << printThree;
+    }
+    
     cout << endl;
 
-    // End CS
-    //signal(print_mux);
+    // Reset print variables
+    stringCopy(printOne, "");
+    stringCopy(printTwo, "");
+    stringCopy(printThree, "");
 }
 
 void sampleFunc(string progNum)
 {
-    // Initialize string values
+    // Wait for print mutex
     wait(print_mux);
+    
+    // In print CS:
+    // Set global print strings
     stringCopy(printOne, "prog number");
     stringCopy(printTwo, progNum);
     stringCopy(printThree, "running!");
     
-    //stringCopy(tmp, progNum);
-    
-    //cout << "Prog number " << i << " running!" << endl;
-    //printFunc("prog number", progNum, "running!");
-    //printFunc(progNumStr, tmp, runStatStr);
-    print();
+    // Call print function
+    printFunc();
+
+    // End print CS
     signal(print_mux);
 }
 
