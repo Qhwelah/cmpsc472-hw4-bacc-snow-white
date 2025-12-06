@@ -24,7 +24,7 @@ binarysem s_swFollowH;
 binarysem s_swRan;
 binarysem s_swAtDs;
 binarysem s_swExpl;
-binarysem s_swLunch;
+semaphore s_swLunch;
 binarysem s_swOpenDoor;
 binarysem s_swComa;
 
