@@ -8,9 +8,14 @@
 // Regular story flow semaphors
 binarysem s_qSentH;
 
+binarysem s_hTakeSW;
+binarysem s_hToldSW;
+
+binarysem s_swFollowH;
+
 
 // Mutex semaphors
-binarysem print_mux;
+binarysem mux_print;
 
 
 // Declare dwarf number string variables
@@ -85,7 +90,7 @@ void printFunc(){
 
 // void sampleFunc(string progNum){
 //     // Wait for print mutex
-//     wait(print_mux);
+//     wait(mux_print);
     
 //     // In print CS:
 //     // Set global print strings
@@ -97,14 +102,14 @@ void printFunc(){
 //     printFunc();
 
 //     // End print CS
-//     signal(print_mux);
+//     signal(mux_print);
 // }
 
 
 void queen(){
     // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
     // Wait for print mutex
-    wait(print_mux);
+    wait(mux_print);
     
     // In print CS:
     // Set global print strings
@@ -114,10 +119,11 @@ void queen(){
     printFunc();
 
     // End print CS
-    signal(print_mux);
+    signal(mux_print);
     // ----------------------------------------------------- //
 
 
+    // Singal Huntsman to take Snow White
     signal(s_qSentH);
 
 
@@ -132,18 +138,55 @@ void oldPeddler(){
 
 
 void huntsman(){
-    // Wait for qOrder to be printed
+    // Wait for Queen order Huntsman
     wait(s_qSentH);
 
-    wait(print_mux);
+    wait(mux_print);
     stringCopy(printOne, hForest);
     printFunc();
-    signal(print_mux);
+    signal(mux_print);
+
+    // Signal Snow White to follow Huntsman
+    signal(s_hTakeSW);
+
+
+
+    // Wait for Snow White to follow Huntsman
+    wait(s_swFollowH);
+
+    wait(mux_print);
+    stringCopy(printOne, hSWRun);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Snow White to run away
+    signal(s_hToldSW);
 
 }
 
 
 void snowWhite(){
+    // Wait for Huntsman to take Snow White to forest
+    wait(s_hTakeSW);
+
+    wait(mux_print);
+    stringCopy(printOne, swFollowsH);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Huntsman to tell Snow White Q's plan
+    signal(s_swFollowH);
+
+
+
+    // Wait for Huntsman to tell Snow White to run away
+    wait(s_hToldSW);
+
+    wait(mux_print);
+    stringCopy(printOne, swEscapes);
+    printFunc();
+    signal(mux_print);
+
 
 }
 
@@ -151,7 +194,7 @@ void snowWhite(){
 void dwarf(string dNum){
     // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
     // Wait for print mutex
-    wait(print_mux);
+    wait(mux_print);
     
     // In print CS:
     // Set global print strings
@@ -164,7 +207,7 @@ void dwarf(string dNum){
     printFunc();
 
     // End print CS
-    signal(print_mux);
+    signal(mux_print);
     // ----------------------------------------------------- //
 
 }
@@ -174,9 +217,14 @@ main(){
     // Initialize story flow semaphores
     initialsem(s_qSentH, 0);
 
+    initialsem(s_hTakeSW, 0);
+    initialsem(s_hToldSW, 0);
+
+    initialsem(s_swFollowH, 0);
+
 
     // Initialize mutex semaphores
-    initialsem(print_mux, 1);
+    initialsem(mux_print, 1);
 
 
     // Initialize dwarf number values
