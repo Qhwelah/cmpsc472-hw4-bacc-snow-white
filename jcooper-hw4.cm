@@ -16,6 +16,8 @@ binarysem s_hToldSW;
 binarysem s_hStagQ;
 
 // Sent by Old Peddler
+binarysem s_opKnocked;
+binarysem s_opGave;
 
 // Sent by Snow White
 binarysem s_swFollowH;
@@ -23,12 +25,14 @@ binarysem s_swRan;
 binarysem s_swAtDs;
 binarysem s_swExpl;
 binarysem s_swLunch;
+binarysem s_swOpenDoor;
+binarysem s_swComa;
 
 // Sent by Dwarves
 binarysem s_dWakesSW;
 binarysem s_dAllowSW;
-binarysem s_dWashed;
-binarysem s_dLeaves;
+semaphore s_dWashed;
+binarysem s_dsGone;
 
 // ------------------------------------ //
 
@@ -166,7 +170,29 @@ void queen(){
 
 
 void oldPeddler(){
+    // Wait for all Dwarves to be gone
+    wait(s_dsGone);
 
+    wait(mux_print);
+    stringCopy(printOne, opKnocks);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Snow White that Old Peddler knocked on door
+    signal(s_opKnocked);
+
+
+
+    // Wait for Snow White to open door
+    wait(s_swOpenDoor);
+    
+    wait(mux_print);
+    stringCopy(printOne, opOffers);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Snow White to eat the poisoned apple
+    signal(s_opGave);
 }
 
 
@@ -260,7 +286,7 @@ void snowWhite(){
         wait(s_dWashed);
         wait(mux_washed);
         wait(mux_lunch);
-        // Find out which Dwarf was ready for lunch
+        // Find out which Dwarf was ready for lunch, make their lunch
         if(washedUp[0] == 1){
             stringCopy(lunchFor, "1");
             washedUp[0] = 0;
@@ -291,8 +317,30 @@ void snowWhite(){
 
 
     // Wait for Old Peddler to knock on the door
+    wait(s_opKnocked);
+
+    wait(mux_print);
+    stringCopy(printOne, swListens);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Old Peddler to give Snow White the poisoned apple
+    signal(s_swOpenDoor);
 
 
+
+    // Wait for Old Peddler to give Snow White the poisoned apple
+    wait(s_opGave);
+    
+    wait(mux_print);
+    stringCopy(printOne, swEatsBad);
+    printFunc();
+    stringCopy(printOne, swComa);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Dwarves to start coming home
+    signal(s_swComa);
 }
 
 
@@ -398,7 +446,7 @@ void dwarf(string dNum, int intDNum){
             // If the incorrect dwarf picks up the response
             signal(mux_lunch);
             signal(s_swLunch);
-            
+
         } else {
             signal(mux_lunch);
             break; // on the correct dwarf
@@ -411,15 +459,15 @@ void dwarf(string dNum, int intDNum){
     printFunc();
     dwarfCount = dwarfCount + 1;
     signal(mux_print);
-    if(dwarfCount <= 3){
-        // If this is not the final dwarf signal the next dwarf to allow SW to stay
-        //signal(s_swLunch);
-    } else {    
-        // If this is already the third Dwarf, signal the Old Peddler to come to the house
+    if(dwarfCount > 3){ 
+        // If this is the third Dwarf, signal the Old Peddler to come to the house
         dwarfCount = 0;
-        signal(s_dLeaves);
+        signal(s_dsGone);
     }
 
+
+
+    // Wait for Snow White to be in a coma
 
 }
 
@@ -436,6 +484,8 @@ main(){
     initialsem(s_hStagQ, 0);
 
     // Sent by Old Peddler
+    initialsem(s_opKnocked, 0);
+    initialsem(s_opGave, 0);
 
     // Sent by Snow White
     initialsem(s_swFollowH, 0);
@@ -443,12 +493,14 @@ main(){
     initialsem(s_swAtDs, 0);
     initialsem(s_swExpl, 0);
     initialsem(s_swLunch, 0);
+    initialsem(s_swOpenDoor, 0);
+    initialsem(s_swComa, 0);
 
     // Sent by Dwarves
     initialsem(s_dWakesSW, 0);
     initialsem(s_dAllowSW, 0);
     initialsem(s_dWashed, 0);
-    initialsem(s_dLeaves, 0);
+    initialsem(s_dsGone, 0);
 
     // ---------------------------------------- //
 
