@@ -55,6 +55,11 @@ binarysem mux_lunch;
 
 
 
+// Delay parameter
+int DELAY = 50;
+
+
+
 // Declare dwarf number string variables
 string[1] dOne;
 string[1] dTwo;
@@ -133,9 +138,7 @@ void printFunc(){
 void delay() {
     int i;
     int DelayTime;
-    DelayTime = rand();
-    DelayTime = DelayTime % 91;
-    DelayTime = DelayTime + 10;
+    DelayTime = random(DELAY);
     for(i = 0; i < DelayTime; i++);
 }
 
