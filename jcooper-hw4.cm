@@ -292,7 +292,7 @@ void dwarf(string dNum, int intDNum){
 
 
     // Wait for Snow White to explain to the dwarves
-    while(true){
+    while(1){ // While True
         wait(s_swExpl);
         wait(mux_print);
         if(dwarfCount != intDNum){
@@ -347,12 +347,14 @@ main(){
     initialsem(s_swFollowH, 0);
     initialsem(s_swRan, 0);
     initialsem(s_swAtDs, 0);
+    initialsem(s_swExpl, 0);
 
     // Sent by Dwarves
     initialsem(s_dWakesSW, 0);
+    initialsem(s_dAllowSW, 0);
 
     // ---------------------------------------- //
-
+    
 
 
     // Integer variables
