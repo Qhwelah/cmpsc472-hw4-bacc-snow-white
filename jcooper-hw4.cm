@@ -133,7 +133,9 @@ void printFunc(){
 void delay() {
     int i;
     int DelayTime;
-    DelayTime = random (DELAY);
+    DelayTime = rand();
+    DelayTime = DelayTime % 91;
+    DelayTime = DelayTime + 10;
     for(i = 0; i < DelayTime; i++);
 }
 
