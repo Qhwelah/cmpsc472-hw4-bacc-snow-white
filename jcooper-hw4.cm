@@ -5,6 +5,7 @@
 // -------------------------------- //
 
 
+
 // --- Regular story flow semaphors --- //
 // Semaphors sent by Queen
 binarysem s_qSentH;
@@ -27,18 +28,22 @@ binarysem s_dWakesSW;
 // ------------------------------------ //
 
 
+
 // Counter for amount of dwarves at home
 int dwarfCount;
+
 
 
 // Mutex semaphors
 binarysem mux_print;
 
 
+
 // Declare dwarf number string variables
 string[1] dOne;
 string[1] dTwo;
 string[1] dThree;
+
 
 
 // Declare story string variables
@@ -76,10 +81,12 @@ string[12] dComesHome;      //  comes home.
 string[42] dCasket;         //  places SW in glass casket, with other Ds.
 
 
+
 // Print helper temp
 string[53] printOne;        // Max length printOne string is queenTricked, len 53
 string[1] printTwo;         // Man length printTwo is a D number, len 1
 string[43] printThree;      // Max length printThree is dMaid, len 43
+
 
 
 // Print mutex is handled in calling functions
@@ -105,6 +112,7 @@ void printFunc(){
 }
 
 
+
 void queen(){
     // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
     // Wait for print mutex
@@ -121,19 +129,20 @@ void queen(){
     signal(mux_print);
     // ----------------------------------------------------- //
 
-
     // Singal Huntsman to take Snow White
     signal(s_qSentH);
 
 
 
-
+    // Wait for Huntsman to return to Queen
 }
+
 
 
 void oldPeddler(){
 
 }
+
 
 
 void huntsman(){
@@ -176,6 +185,7 @@ void huntsman(){
 }
 
 
+
 void snowWhite(){
     // Wait for Huntsman to take Snow White to forest
     wait(s_hTakeSW);
@@ -216,6 +226,7 @@ void snowWhite(){
 }
 
 
+
 void dwarf(string dNum){
     // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
     // Wait for print mutex
@@ -248,7 +259,7 @@ void dwarf(string dNum){
         stringCopy(printThree, dComeHome);
     } else {
         // Third dwarf
-        stringCopy(printThree, dWakeSW);
+        stringCopy(printThree, dWakesSW);
         dwarfCount = 0;
         // Signal Snow White to explain to the Dwarves
         signal(s_dWakesSW);
@@ -257,6 +268,7 @@ void dwarf(string dNum){
     signal(mux_print);
 
 }
+
 
 
 main(){
@@ -277,17 +289,20 @@ main(){
     initialsem(s_swAtDs, 0);
 
     // Sent by Dwarves
-    initialsem(s_dwakesSW, 0);
+    initialsem(s_dWakesSW, 0);
 
     // ---------------------------------------- //
+
 
 
     // Integer variables
     dwarfCount = 0;
 
 
+
     // Initialize mutex semaphores
     initialsem(mux_print, 1);
+
 
 
     // Initialize dwarf number values
@@ -296,10 +311,12 @@ main(){
     stringCopy(dThree, "3");
 
 
+
     // Initialize print variables
     stringCopy(printOne, "");
     stringCopy(printTwo, "");
     stringCopy(printThree, "");
+
 
 
     // Initialize story string contents
@@ -337,18 +354,12 @@ main(){
     stringCopy(dCasket, " places SW in glass casket, with other Ds.");
 
 
-    // stringCopy(printOne, queenTricked);
 
-    //// Even strings in cout print commands count towards the string table space. 
-
-    // cout << printOne << endl;
-    // cout << queenTricked << endl;
-
-    // cout << "Program running!" << endl;
-
+    // Begin story
     stringCopy(printOne, onceUpon);
     printFunc();
 
+    // Begin all concurrent operations
     cobegin {
         
         queen();
@@ -365,8 +376,7 @@ main(){
     
     }
 
+    // End story
     stringCopy(printOne, toBeCont);
     printFunc();
-
-    // cout << "Concurrent programs all concluded!" << endl;
 }
