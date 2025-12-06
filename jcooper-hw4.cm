@@ -4,18 +4,20 @@
 // Class: CMPSC 472-002, Fall 2025  //
 // -------------------------------- //
 
+
 // Regular flow semaphors
 binarysem testsem;
+
 
 // Mutex semaphors
 binarysem print_mux;
 
-// Declare string variables
+
+// Declare dwarf number string variables
 string[1] dOne;
 string[1] dTwo;
 string[1] dThree;
-// string[20] progNumStr;
-// string[20] runStatStr;
+
 
 // Declare story string variables
 string[42] onceUpon;        // Once upon a time, there lived princess SW.
@@ -53,9 +55,10 @@ string[42] dCasket;         //  places SW in glass casket, with other Ds.
 
 
 // Print helper temp
-string[20] printOne;
-string[20] printTwo;
-string[20] printThree;
+string[53] printOne;        // Max length printOne string is queenTricked, len 53
+string[1] printTwo;         // Man length printTwo is a D number, len 1
+string[43] printThree;      // Max length printThree is dMaid, len 43
+
 
 // Print mutex is handled in calling functions
 void printFunc()
@@ -83,6 +86,7 @@ void printFunc()
     stringCopy(printThree, "");
 }
 
+
 void sampleFunc(string progNum)
 {
     // Wait for print mutex
@@ -100,6 +104,7 @@ void sampleFunc(string progNum)
     // End print CS
     signal(print_mux);
 }
+
 
 main()
 {
@@ -154,6 +159,10 @@ main()
     stringCopy(dComesHome, " comes home.");
     stringCopy(dCasket, " places SW in glass casket, with other Ds.");
 
+
+    stringCopy(printOne, queenTricked);
+    cout << "printOne is " << printOne << endl;
+    cout << "queenTricked is " << queenTricked << endl;
 
     cout << "Program running!" << endl;
 
