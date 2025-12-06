@@ -18,12 +18,12 @@ string[1] dThree;
 // string[20] runStatStr;
 
 // Declare story string variables
-string[62] onceUpon;        // Once upon a time, there lived lovely little princess named SW.
+string[42] onceUpon;        // Once upon a time, there lived princess SW.
 string[16] toBeCont;        // To be continued.
 
 string[43] queenOrder;      // Q orders H take SW into forest and kill SW.
 string[53] queenTricked;    // Q realizes H tricked her, decides to kill SW herself.
-string[26] queenHide;       // Q disguises herself as OP.
+string[18] queenHide;       // Q disguises as OP.
 
 string[23] opKnocks;        // OP knocks on D's house.
 string[28] opOffers;        // OP offers SW poisoned apple.
@@ -32,11 +32,11 @@ string[23] hForest;         // H takes SW into forest.
 string[35] hSWRun;          // H tells Q's plan, lets SW run away.
 string[26] hStag;           // H gives stag's heart to Q.
 
-string[31] swFollowsH;      // SW follows H and enters forest.
+string[25] swFollowsH;      // SW follows H into forest.
 string[42] swEscapes;       // SW escapes, finds D's house, falls asleep.
 string[32] swExplains;      // SW explains to Ds what happened.
 string[23] swLunch;         // SW prepares lunch for D
-string[47] swListens;       // SW listens to sound of knocking and opens door.
+string[38] swListens;       // SW listens to knocking and opens door.
 string[23] swEatsBad;       // SW eats poisoned apple.
 string[19] swComa;          // SW falls into coma.
 
@@ -49,7 +49,7 @@ string[18] dWash;           //  washes for lunch.
 string[29] dEats;           //  eats lunch and goes to work.
 string[43] dCallsHome;      //  comes home, finds SW dead, calls other Ds.
 string[12] dComesHome;      //  comes home.
-string[61] dCasket;         //  places SW in glass casket as funeral for her, with other Ds.
+string[42] dCasket;         //  places SW in glass casket, with other Ds.
 
 
 // Print helper temp
@@ -121,12 +121,12 @@ main()
 
 
     // Initialize story string contents
-    stringCopy(onceUpon, "Once upon a time, there lived lovely little princess named SW.");
+    stringCopy(onceUpon, "Once upon a time, there lived princess SW.");
     stringCopy(toBeCont, "To be continued.");
 
     stringCopy(queenOrder, "Q orders H take SW into forest and kill SW.");
     stringCopy(queenTricked, "Q realizes H tricked her, decides to kill SW herself.");
-    stringCopy(queenHide, "Q disguises herself as OP.");
+    stringCopy(queenHide, "Q disguises as OP.");
 
     stringCopy(opKnocks, "OP knocks on D's house.");
     stringCopy(opOffers, "OP offers SW poisoned apple.");
@@ -135,11 +135,11 @@ main()
     stringCopy(hSWRun, "H tells Q's plan, lets SW run away.");
     stringCopy(hStag, "H gives stag's heart to Q.");
 
-    stringCopy(swFollowsH, "SW follows H and enters forest.");
+    stringCopy(swFollowsH, "SW follows H into forest.");
     stringCopy(swEscapes, "SW escapes, finds D's house, falls asleep.");
     stringCopy(swExplains, "SW explains to Ds what happened.");
     stringCopy(swLunch, "SW prepares lunch for D");
-    stringCopy(swListens, "SW listens to sound of knocking and opens door.");
+    stringCopy(swListens, "SW listens to knocking and opens door.");
     stringCopy(swEatsBad, "SW eats poisoned apple.");
     stringCopy(swComa, "SW falls into coma.");
 
@@ -152,7 +152,7 @@ main()
     stringCopy(dEats, " eats lunch and goes to work.");
     stringCopy(dCallsHome, " comes home, finds SW dead, calls other Ds.");
     stringCopy(dComesHome, " comes home.");
-    stringCopy(dCasket, " places SW in glass casket as funeral for her, with other Ds.");
+    stringCopy(dCasket, " places SW in glass casket, with other Ds.");
 
 
     cout << "Program running!" << endl;
