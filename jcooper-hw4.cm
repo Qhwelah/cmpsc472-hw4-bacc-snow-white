@@ -21,9 +21,11 @@ binarysem s_hStagQ;
 binarysem s_swFollowH;
 binarysem s_swRan;
 binarysem s_swAtDs;
+binarysem s_swExpl;
 
 // Sent by Dwarves
 binarysem s_dWakesSW;
+binarysem s_dAllowSW;
 
 // ------------------------------------ //
 
@@ -135,6 +137,20 @@ void queen(){
 
 
     // Wait for Huntsman to return to Queen
+    wait(s_hStagQ);
+    wait(mux_print);
+    stringCopy(printOne, qTricked);
+    printFunc();
+    signal(mux_print);
+
+
+    // Does not require a different semaphor to wait for after qTricked, only a delay
+    wait(mux_print);
+    stringCopy(printOne, qHide);
+    printFunc();
+    signal(mux_print);
+
+    // Queen becomes Old Peddler
 }
 
 
@@ -181,6 +197,7 @@ void huntsman(){
     signal(mux_print);
 
     // Signal Queen to realize she was tricked
+    signal(s_hStagQ);
 
 }
 
@@ -217,17 +234,21 @@ void snowWhite(){
 
     // Wait for Dwarves to wake up Snow White
     wait(s_dWakesSW);
+
     wait(mux_print);
     stringCopy(printOne, swExplains);
     printFunc();
     signal(mux_print);
+
+    // Signal Dwarves to let her stay
+    signal(s_swExpl);
 
 
 }
 
 
 
-void dwarf(string dNum){
+void dwarf(string dNum, int intDNum){
     // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
     // Wait for print mutex
     wait(mux_print);
@@ -257,15 +278,54 @@ void dwarf(string dNum){
     if(dwarfCount < 3){
         // First two dwarves
         stringCopy(printThree, dComeHome);
+        signal(s_swAtDs);
     } else {
         // Third dwarf
         stringCopy(printThree, dWakesSW);
-        dwarfCount = 0;
+        dwarfCount = 1;
         // Signal Snow White to explain to the Dwarves
         signal(s_dWakesSW);
     }
     printFunc();
     signal(mux_print);
+
+
+
+    // Wait for Snow White to explain to the dwarves
+    while(true){
+        wait(s_swExpl);
+        wait(mux_print);
+        if(dwarfCount != intDNum){
+            // If the incorrect dwarf picks up the response
+            //  Response order must be D1, D2, D3
+            signal(mux_print);
+            signal(s_swExpl);
+        }
+        break; // on the correct dwarf
+    }
+    // on the correct dwarf, still in print mutex
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    stringCopy(printThree, dMaid);
+    printFunc();
+    dwarfCount = dwarfCount + 1;
+    signal(mux_print);
+    // Check which dwarf this is
+    if(dwarfCount <= 3){
+        // If this is not the final dwarf singal the next dwarf to allow SW to stay
+        signal(s_swExpl);
+    } else {    
+        // If this is already the third Dwarf, signal the dwarves to start washing for lunch
+        dwarfCount = 0;
+        signal(s_dAllowSW);
+    }
+
+
+
+    // Wait for the third dwarf to allow Snow White to stay
+    //wait(s_dAllowSW);
+
+    
 
 }
 
@@ -370,9 +430,9 @@ main(){
 
         snowWhite();
         
-        dwarf(dOne);
-        dwarf(dTwo);
-        dwarf(dThree);
+        dwarf(dOne, 1);
+        dwarf(dTwo, 2);
+        dwarf(dThree, 3);
     
     }
 
