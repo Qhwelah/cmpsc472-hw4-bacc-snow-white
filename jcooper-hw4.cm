@@ -5,13 +5,30 @@
 // -------------------------------- //
 
 
-// Regular story flow semaphors
+// --- Regular story flow semaphors --- //
+// Semaphors sent by Queen
 binarysem s_qSentH;
 
+// Sent by Huntsman
 binarysem s_hTakeSW;
 binarysem s_hToldSW;
+binarysem s_hStagQ;
 
+// Sent by Old Peddler
+
+// Sent by Snow White
 binarysem s_swFollowH;
+binarysem s_swRan;
+binarysem s_swAtDs;
+
+// Sent by Dwarves
+binarysem s_dWakesSW;
+
+// ------------------------------------ //
+
+
+// Counter for amount of dwarves at home
+int dwarfCount;
 
 
 // Mutex semaphors
@@ -88,24 +105,6 @@ void printFunc(){
 }
 
 
-// void sampleFunc(string progNum){
-//     // Wait for print mutex
-//     wait(mux_print);
-    
-//     // In print CS:
-//     // Set global print strings
-//     stringCopy(printOne, "prog number");
-//     stringCopy(printTwo, progNum);
-//     stringCopy(printThree, "running!");
-    
-//     // Call print function
-//     printFunc();
-
-//     // End print CS
-//     signal(mux_print);
-// }
-
-
 void queen(){
     // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
     // Wait for print mutex
@@ -162,6 +161,18 @@ void huntsman(){
     // Signal Snow White to run away
     signal(s_hToldSW);
 
+
+
+    // Wait for SW to run away
+    wait(s_swRan);
+    
+    wait(mux_print);
+    stringCopy(printOne, hStag);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Queen to realize she was tricked
+
 }
 
 
@@ -184,6 +195,20 @@ void snowWhite(){
 
     wait(mux_print);
     stringCopy(printOne, swEscapes);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Huntsman to give the stag's heart to the Queen
+    signal(s_swRan);
+    // Signal Dwarves to begin coming home
+    signal(s_swAtDs);
+
+
+
+    // Wait for Dwarves to wake up Snow White
+    wait(s_dWakesSW);
+    wait(mux_print);
+    stringCopy(printOne, swExplains);
     printFunc();
     signal(mux_print);
 
@@ -210,17 +235,55 @@ void dwarf(string dNum){
     signal(mux_print);
     // ----------------------------------------------------- //
 
+    
+
+    // Wait for Snow White to arrive at Dwarves' house
+    wait(s_swAtDs);
+    wait(mux_print);
+    dwarfCount = dwarfCount + 1;  // Does not need extra mutex since already in print mutex
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    if(dwarfCount < 3){
+        // First two dwarves
+        stringCopy(printThree, dComeHome);
+    } else {
+        // Third dwarf
+        stringCopy(printThree, dWakeSW);
+        dwarfCount = 0;
+        // Signal Snow White to explain to the Dwarves
+        signal(s_dWakesSW);
+    }
+    printFunc();
+    signal(mux_print);
+
 }
 
 
 main(){
-    // Initialize story flow semaphores
+    // --- Initialize story flow semaphores --- //
+    // Sent by Queen
     initialsem(s_qSentH, 0);
 
+    // Sent by Huntsman
     initialsem(s_hTakeSW, 0);
     initialsem(s_hToldSW, 0);
+    initialsem(s_hStagQ, 0);
 
+    // Sent by Old Peddler
+
+    // Sent by Snow White
     initialsem(s_swFollowH, 0);
+    initialsem(s_swRan, 0);
+    initialsem(s_swAtDs, 0);
+
+    // Sent by Dwarves
+    initialsem(s_dwakesSW, 0);
+
+    // ---------------------------------------- //
+
+
+    // Integer variables
+    dwarfCount = 0;
 
 
     // Initialize mutex semaphores
