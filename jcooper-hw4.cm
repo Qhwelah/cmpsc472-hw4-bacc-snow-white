@@ -52,41 +52,6 @@ string[12] dComesHome;      //  comes home.
 string[61] dCasket;         //  places SW in glass casket as funeral for her, with other Ds.
 
 
-// Initialize strings
-stringCopy(onceUpon, "Once upon a time, there lived lovely little princess named SW.");
-stringCopy(toBeCont, "To be continued.");
-
-stringCopy(queenOrder, "Q orders H take SW into forest and kill SW.");
-stringCopy(queenTricked, "Q realizes H tricked her, decides to kill SW herself.");
-stringCopy(queenHide, "Q disguises herself as OP.");
-
-stringCopy(opKnocks, "OP knocks on D's house.");
-stringCopy(opOffers, "OP offers SW poisoned apple.");
-
-stringCopy(hForest, "H takes SW into forest.");
-stringCopy(hSWRun, "H tells Q's plan, lets SW run away.");
-stringCopy(hStag, "H gives stag's heart to Q.");
-
-stringCopy(swFollowsH, "SW follows H and enters forest.");
-stringCopy(swEscapes, "SW escapes, finds D's house, falls asleep.");
-stringCopy(swExplains, "SW explains to Ds what happened.");
-stringCopy(swLunch, "SW prepares lunch for D");
-stringCopy(swListens, "SW listens to sound of knocking and opens door.");
-stringCopy(swEatsBad, "SW eats poisoned apple.");
-stringCopy(swComa, "SW falls into coma.");
-
-stringCopy(dName, "D");
-stringCopy(dWork, " goes to work in the morning.");
-stringCopy(dComeHome, " comes home, finds SW.");
-stringCopy(dWakesSW, " comes home, finds SW, and wakes SW up.");
-stringCopy(dMaid, " lets her stay as housemaid, with other Ds.");
-stringCopy(dWash, " washes for lunch.");
-stringCopy(dEats, " eats lunch and goes to work.");
-stringCopy(dCallsHome, " comes home, finds SW dead, calls other Ds.");
-stringCopy(dComesHome, " comes home.");
-stringCopy(dCasket, " places SW in glass casket as funeral for her, with other Ds.");
-
-
 // Print helper temp
 string[20] printOne;
 string[20] printTwo;
@@ -142,15 +107,52 @@ main()
     initialsem(testsem, 1);
     initialsem(print_mux, 1);
 
-    // Initialize string values
+
+    // Initialize dwarf number values
     stringCopy(dOne, "1");
     stringCopy(dTwo, "2");
     stringCopy(dThree, "3");
+
 
     // Initialize print variables
     stringCopy(printOne, "");
     stringCopy(printTwo, "");
     stringCopy(printThree, "");
+
+
+    // Initialize story string contents
+    stringCopy(onceUpon, "Once upon a time, there lived lovely little princess named SW.");
+    stringCopy(toBeCont, "To be continued.");
+
+    stringCopy(queenOrder, "Q orders H take SW into forest and kill SW.");
+    stringCopy(queenTricked, "Q realizes H tricked her, decides to kill SW herself.");
+    stringCopy(queenHide, "Q disguises herself as OP.");
+
+    stringCopy(opKnocks, "OP knocks on D's house.");
+    stringCopy(opOffers, "OP offers SW poisoned apple.");
+
+    stringCopy(hForest, "H takes SW into forest.");
+    stringCopy(hSWRun, "H tells Q's plan, lets SW run away.");
+    stringCopy(hStag, "H gives stag's heart to Q.");
+
+    stringCopy(swFollowsH, "SW follows H and enters forest.");
+    stringCopy(swEscapes, "SW escapes, finds D's house, falls asleep.");
+    stringCopy(swExplains, "SW explains to Ds what happened.");
+    stringCopy(swLunch, "SW prepares lunch for D");
+    stringCopy(swListens, "SW listens to sound of knocking and opens door.");
+    stringCopy(swEatsBad, "SW eats poisoned apple.");
+    stringCopy(swComa, "SW falls into coma.");
+
+    stringCopy(dName, "D");
+    stringCopy(dWork, " goes to work in the morning.");
+    stringCopy(dComeHome, " comes home, finds SW.");
+    stringCopy(dWakesSW, " comes home, finds SW, and wakes SW up.");
+    stringCopy(dMaid, " lets her stay as housemaid, with other Ds.");
+    stringCopy(dWash, " washes for lunch.");
+    stringCopy(dEats, " eats lunch and goes to work.");
+    stringCopy(dCallsHome, " comes home, finds SW dead, calls other Ds.");
+    stringCopy(dComesHome, " comes home.");
+    stringCopy(dCasket, " places SW in glass casket as funeral for her, with other Ds.");
 
 
     cout << "Program running!" << endl;
@@ -160,4 +162,6 @@ main()
         sampleFunc(dTwo);
         sampleFunc(dThree);
     }
+
+    cout << "Concurrent programs all concluded!" << endl;
 }
