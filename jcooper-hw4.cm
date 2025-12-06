@@ -33,6 +33,7 @@ binarysem s_dWakesSW;
 binarysem s_dAllowSW;
 semaphore s_dWashed;
 binarysem s_dsGone;
+binarysem s_dAllBack;
 
 // ------------------------------------ //
 
@@ -459,7 +460,7 @@ void dwarf(string dNum, int intDNum){
     printFunc();
     dwarfCount = dwarfCount + 1;
     signal(mux_print);
-    if(dwarfCount > 3){ 
+    if(dwarfCount >= 3){ 
         // If this is the third Dwarf, signal the Old Peddler to come to the house
         dwarfCount = 0;
         signal(s_dsGone);
@@ -468,7 +469,38 @@ void dwarf(string dNum, int intDNum){
 
 
     // Wait for Snow White to be in a coma
+    wait(s_swComa);
+    wait(mux_print);
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    dwarfCount = dwarfCount + 1;
+    if(dwarfCount == 1){
+        // If this is the first Dwarf to return home, call all other Dwarves home too
+        stringCopy(printThree, dCallsHome);
+        signal(s_swComa);
+    } else {
+        // If this is not the first Dwarf to return, just come home
+        stringCopy(printThree, dComesHome);
+        signal(s_swComa);
+    }
+    printFunc();
+    // If this is the last Dwarf to return home, signal the other Dwarves to put Snow White in the casket
+    if(dwarfCount >= 3) {
+        dwarfCount = 0;
+        signal(s_dAllBack);
+    }
+    signal(mux_print);
 
+
+
+    // Wait for all Dwarves to be back home
+    wait(s_dAllBack);
+    wait(mux_print);
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    stringCopy(printThree, dCasket);
+    signal(mux_print);
+    signal(s_dAllBack);
 }
 
 
@@ -501,6 +533,7 @@ main(){
     initialsem(s_dAllowSW, 0);
     initialsem(s_dWashed, 0);
     initialsem(s_dsGone, 0);
+    initialsem(s_dAllBack, 0);
 
     // ---------------------------------------- //
 
