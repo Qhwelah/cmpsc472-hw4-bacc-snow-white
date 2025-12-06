@@ -61,20 +61,16 @@ string[43] printThree;      // Max length printThree is dMaid, len 43
 
 
 // Print mutex is handled in calling functions
-void printFunc()
-{
-    if(stringLength(printOne) > 0)
-    {
+void printFunc(){
+    if(stringLength(printOne) > 0){
         cout << printOne;
     }
 
-    if(stringLength(printTwo) > 0)
-    {
+    if(stringLength(printTwo) > 0){
         cout << printTwo;
     }
 
-    if(stringLength(printThree) > 0)
-    {
+    if(stringLength(printThree) > 0){
         cout << printThree;
     }
     
@@ -87,16 +83,53 @@ void printFunc()
 }
 
 
-void sampleFunc(string progNum)
-{
+// void sampleFunc(string progNum){
+//     // Wait for print mutex
+//     wait(print_mux);
+    
+//     // In print CS:
+//     // Set global print strings
+//     stringCopy(printOne, "prog number");
+//     stringCopy(printTwo, progNum);
+//     stringCopy(printThree, "running!");
+    
+//     // Call print function
+//     printFunc();
+
+//     // End print CS
+//     signal(print_mux);
+// }
+
+
+void queen(){
+
+}
+
+
+void oldPeddler(){
+
+}
+
+
+void huntsman(){
+
+}
+
+
+void snowWhite(){
+
+}
+
+
+void dwarf(string dNum){
     // Wait for print mutex
     wait(print_mux);
     
     // In print CS:
     // Set global print strings
-    stringCopy(printOne, "prog number");
-    stringCopy(printTwo, progNum);
-    stringCopy(printThree, "running!");
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    stringCopy(printThree, dWork);
     
     // Call print function
     printFunc();
@@ -106,8 +139,7 @@ void sampleFunc(string progNum)
 }
 
 
-main()
-{
+main(){
     // Initialize semaphores
     initialsem(testsem, 1);
     initialsem(print_mux, 1);
@@ -160,19 +192,29 @@ main()
     stringCopy(dCasket, " places SW in glass casket, with other Ds.");
 
 
-    stringCopy(printOne, queenTricked);
+    // stringCopy(printOne, queenTricked);
 
     //// Even strings in cout print commands count towards the string table space. 
 
-    cout << printOne << endl;
-    cout << queenTricked << endl;
+    // cout << printOne << endl;
+    // cout << queenTricked << endl;
 
     // cout << "Program running!" << endl;
 
     cobegin {
-        sampleFunc(dOne);
-        sampleFunc(dTwo);
-        sampleFunc(dThree);
+        
+        queen();
+
+        oldPeddler();
+
+        huntsman();
+
+        snowWhite();
+        
+        dwarf(dOne);
+        dwarf(dTwo);
+        dwarf(dThree);
+    
     }
 
     // cout << "Concurrent programs all concluded!" << endl;
