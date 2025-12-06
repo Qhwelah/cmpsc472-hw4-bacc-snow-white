@@ -384,7 +384,7 @@ void dwarf(string dNum, int intDNum){
     signal(mux_washed);
     signal(mux_print);
     // signal the other dwarves they can wash up too
-    wait(s_dAllowSW);
+    signal(s_dAllowSW);
     // signal Snow White that one of the dwarves is washed up
     signal(s_dWashed);
     
@@ -393,17 +393,18 @@ void dwarf(string dNum, int intDNum){
     // Wait for Snow White to make this Dwarf's lunch
     while(1){ // While True
         wait(s_swLunch);
-        wait(mux_print);
         wait(mux_lunch);
         if(madeLunch[intDNum - 1] != 1){
             // If the incorrect dwarf picks up the response
-            signal(mux_print);
+            signal(mux_lunch);
             signal(s_swLunch);
+            
         } else {
+            signal(mux_lunch);
             break; // on the correct dwarf
         }
-        signal(mux_lunch);
     }
+    wait(mux_print);
     stringCopy(printOne, dName);
     stringCopy(printTwo, dNum);
     stringCopy(printThree, dEats);
@@ -412,7 +413,7 @@ void dwarf(string dNum, int intDNum){
     signal(mux_print);
     if(dwarfCount <= 3){
         // If this is not the final dwarf signal the next dwarf to allow SW to stay
-        signal(s_swLunch);
+        //signal(s_swLunch);
     } else {    
         // If this is already the third Dwarf, signal the Old Peddler to come to the house
         dwarfCount = 0;
