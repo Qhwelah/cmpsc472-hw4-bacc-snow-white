@@ -7,7 +7,7 @@
 
 
 // --- Regular story flow semaphores --- //
-// Semaphors sent by Queen
+// Semaphores sent by Queen
 binarysem s_qSentH;
 
 // Sent by Huntsman
@@ -48,7 +48,7 @@ string[1] lunchFor;
 
 
 
-// Mutex semaphors
+// Mutex semaphores
 binarysem mux_print;
 binarysem mux_washed;
 binarysem mux_lunch;
