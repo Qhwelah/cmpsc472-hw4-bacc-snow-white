@@ -5,8 +5,8 @@
 // -------------------------------- //
 
 
-// Regular flow semaphors
-binarysem testsem;
+// Regular story flow semaphors
+binarysem s_qSentH;
 
 
 // Mutex semaphors
@@ -23,9 +23,9 @@ string[1] dThree;
 string[42] onceUpon;        // Once upon a time, there lived princess SW.
 string[16] toBeCont;        // To be continued.
 
-string[43] queenOrder;      // Q orders H take SW into forest and kill SW.
-string[53] queenTricked;    // Q realizes H tricked her, decides to kill SW herself.
-string[18] queenHide;       // Q disguises as OP.
+string[43] qOrder;          // Q orders H take SW into forest and kill SW.
+string[53] qTricked;        // Q realizes H tricked her, decides to kill SW herself.
+string[18] qHide;           // Q disguises as OP.
 
 string[23] opKnocks;        // OP knocks on D's house.
 string[28] opOffers;        // OP offers SW poisoned apple.
@@ -102,6 +102,26 @@ void printFunc(){
 
 
 void queen(){
+    // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
+    // Wait for print mutex
+    wait(print_mux);
+    
+    // In print CS:
+    // Set global print strings
+    stringCopy(printOne, qOrder);
+    
+    // Call print function
+    printFunc();
+
+    // End print CS
+    signal(print_mux);
+    // ----------------------------------------------------- //
+
+
+    signal(s_qSentH);
+
+
+
 
 }
 
@@ -112,6 +132,13 @@ void oldPeddler(){
 
 
 void huntsman(){
+    // Wait for qOrder to be printed
+    wait(s_qSentH);
+
+    wait(print_mux);
+    stringCopy(printOne, hForest);
+    printFunc();
+    signal(print_mux);
 
 }
 
@@ -122,11 +149,13 @@ void snowWhite(){
 
 
 void dwarf(string dNum){
+    // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
     // Wait for print mutex
     wait(print_mux);
     
     // In print CS:
     // Set global print strings
+    // NOTE: MULTIPLE STRINGS TO PRINT TOGETHER
     stringCopy(printOne, dName);
     stringCopy(printTwo, dNum);
     stringCopy(printThree, dWork);
@@ -136,12 +165,17 @@ void dwarf(string dNum){
 
     // End print CS
     signal(print_mux);
+    // ----------------------------------------------------- //
+
 }
 
 
 main(){
-    // Initialize semaphores
-    initialsem(testsem, 1);
+    // Initialize story flow semaphores
+    initialsem(s_qSentH, 0);
+
+
+    // Initialize mutex semaphores
     initialsem(print_mux, 1);
 
 
@@ -161,9 +195,9 @@ main(){
     stringCopy(onceUpon, "Once upon a time, there lived princess SW.");
     stringCopy(toBeCont, "To be continued.");
 
-    stringCopy(queenOrder, "Q orders H take SW into forest and kill SW.");
-    stringCopy(queenTricked, "Q realizes H tricked her, decides to kill SW herself.");
-    stringCopy(queenHide, "Q disguises as OP.");
+    stringCopy(qOrder, "Q orders H take SW into forest and kill SW.");
+    stringCopy(qTricked, "Q realizes H tricked her, decides to kill SW herself.");
+    stringCopy(qHide, "Q disguises as OP.");
 
     stringCopy(opKnocks, "OP knocks on D's house.");
     stringCopy(opOffers, "OP offers SW poisoned apple.");
@@ -201,6 +235,9 @@ main(){
 
     // cout << "Program running!" << endl;
 
+    stringCopy(printOne, onceUpon);
+    printFunc();
+
     cobegin {
         
         queen();
@@ -216,6 +253,9 @@ main(){
         dwarf(dThree);
     
     }
+
+    stringCopy(printOne, toBeCont);
+    printFunc();
 
     // cout << "Concurrent programs all concluded!" << endl;
 }
