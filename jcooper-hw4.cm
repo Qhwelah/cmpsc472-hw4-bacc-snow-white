@@ -6,7 +6,7 @@
 
 
 
-// --- Regular story flow semaphors --- //
+// --- Regular story flow semaphores --- //
 // Semaphors sent by Queen
 binarysem s_qSentH;
 
@@ -56,7 +56,7 @@ binarysem mux_lunch;
 
 
 // Delay parameter
-int DELAY = 50;
+int DELAY;
 
 
 
@@ -589,6 +589,11 @@ main(){
     madeLunch[1] = 0;
     madeLunch[2] = 0;
     stringCopy(lunchFor, "");
+
+
+
+    // Delay variable
+    DELAY = 50;
 
 
 
