@@ -70,12 +70,12 @@ void printFunc()
 
     if(stringLength(printTwo) > 0)
     {
-        cout << "" << printTwo;
+        cout << printTwo;
     }
 
     if(stringLength(printThree) > 0)
     {
-        cout << "" << printThree;
+        cout << printThree;
     }
     
     cout << endl;
@@ -161,10 +161,13 @@ main()
 
 
     stringCopy(printOne, queenTricked);
-    cout << "printOne is " << printOne << endl;
-    cout << "queenTricked is " << queenTricked << endl;
 
-    cout << "Program running!" << endl;
+    //// Even strings in cout print commands count towards the string table space. 
+
+    cout << printOne << endl;
+    cout << queenTricked << endl;
+
+    // cout << "Program running!" << endl;
 
     cobegin {
         sampleFunc(dOne);
@@ -172,5 +175,5 @@ main()
         sampleFunc(dThree);
     }
 
-    cout << "Concurrent programs all concluded!" << endl;
+    // cout << "Concurrent programs all concluded!" << endl;
 }
