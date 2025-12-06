@@ -11,11 +11,80 @@ binarysem testsem;
 binarysem print_mux;
 
 // Declare string variables
-string[20] dOne;
-string[20] dTwo;
-string[20] dThree;
+string[1] dOne;
+string[1] dTwo;
+string[1] dThree;
 // string[20] progNumStr;
 // string[20] runStatStr;
+
+// Declare story string variables
+string[62] onceUpon;        // Once upon a time, there lived lovely little princess named SW.
+string[16] toBeCont;        // To be continued.
+
+string[43] queenOrder;      // Q orders H take SW into forest and kill SW.
+string[53] queenTricked;    // Q realizes H tricked her, decides to kill SW herself.
+string[26] queenHide;       // Q disguises herself as OP.
+
+string[23] opKnocks;        // OP knocks on D's house.
+string[28] opOffers;        // OP offers SW poisoned apple.
+
+string[23] hForest;         // H takes SW into forest.
+string[35] hSWRun;          // H tells Q's plan, lets SW run away.
+string[26] hStag;           // H gives stag's heart to Q.
+
+string[31] swFollowsH;      // SW follows H and enters forest.
+string[42] swEscapes;       // SW escapes, finds D's house, falls asleep.
+string[32] swExplains;      // SW explains to Ds what happened.
+string[23] swLunch;         // SW prepares lunch for D
+string[47] swListens;       // SW listens to sound of knocking and opens door.
+string[23] swEatsBad;       // SW eats poisoned apple.
+string[19] swComa;          // SW falls into coma.
+
+string[1] dName;            // D
+string[29] dWork;           //  goes to work in the morning.
+string[22] dComeHome;       //  comes home, finds SW.
+string[39] dWakesSW;        //  comes home, finds SW, and wakes SW up.
+string[43] dMaid;           //  lets her stay as housemaid, with other Ds.
+string[18] dWash;           //  washes for lunch.
+string[29] dEats;           //  eats lunch and goes to work.
+string[43] dCallsHome;      //  comes home, finds SW dead, calls other Ds.
+string[12] dComesHome;      //  comes home.
+string[61] dCasket;         //  places SW in glass casket as funeral for her, with other Ds.
+
+
+// Initialize strings
+stringCopy(onceUpon, "Once upon a time, there lived lovely little princess named SW.");
+stringCopy(toBeCont, "To be continued.");
+
+stringCopy(queenOrder, "Q orders H take SW into forest and kill SW.");
+stringCopy(queenTricked, "Q realizes H tricked her, decides to kill SW herself.");
+stringCopy(queenHide, "Q disguises herself as OP.");
+
+stringCopy(opKnocks, "OP knocks on D's house.");
+stringCopy(opOffers, "OP offers SW poisoned apple.");
+
+stringCopy(hForest, "H takes SW into forest.");
+stringCopy(hSWRun, "H tells Q's plan, lets SW run away.");
+stringCopy(hStag, "H gives stag's heart to Q.");
+
+stringCopy(swFollowsH, "SW follows H and enters forest.");
+stringCopy(swEscapes, "SW escapes, finds D's house, falls asleep.");
+stringCopy(swExplains, "SW explains to Ds what happened.");
+stringCopy(swLunch, "SW prepares lunch for D");
+stringCopy(swListens, "SW listens to sound of knocking and opens door.");
+stringCopy(swEatsBad, "SW eats poisoned apple.");
+stringCopy(swComa, "SW falls into coma.");
+
+stringCopy(dName, "D");
+stringCopy(dWork, " goes to work in the morning.");
+stringCopy(dComeHome, " comes home, finds SW.");
+stringCopy(dWakesSW, " comes home, finds SW, and wakes SW up.");
+stringCopy(dMaid, " lets her stay as housemaid, with other Ds.");
+stringCopy(dWash, " washes for lunch.");
+stringCopy(dEats, " eats lunch and goes to work.");
+stringCopy(dCallsHome, " comes home, finds SW dead, calls other Ds.");
+stringCopy(dComesHome, " comes home.");
+stringCopy(dCasket, " places SW in glass casket as funeral for her, with other Ds.");
 
 
 // Print helper temp
@@ -33,12 +102,12 @@ void printFunc()
 
     if(stringLength(printTwo) > 0)
     {
-        cout << " " << printTwo;
+        cout << "" << printTwo;
     }
 
     if(stringLength(printThree) > 0)
     {
-        cout << " " << printThree;
+        cout << "" << printThree;
     }
     
     cout << endl;
