@@ -46,6 +46,7 @@ string[1] lunchFor;
 // Mutex semaphors
 binarysem mux_print;
 binarysem mux_washed;
+binarysem mux_lunch;
 
 
 
@@ -258,6 +259,7 @@ void snowWhite(){
         // Wait for Dwarves to wash up for lunch
         wait(s_dWashed);
         wait(mux_washed);
+        wait(mux_lunch);
         // Find out which Dwarf was ready for lunch
         if(washedUp[0] == 1){
             stringCopy(lunchFor, "1");
@@ -269,9 +271,10 @@ void snowWhite(){
             madeLunch[1] = 1;
         } else {
             stringCopy(lunchFor, "3");
-            washedUp[1] = 0;
+            washedUp[2] = 0;
             madeLunch[2] = 1;
         }
+        signal(mux_lunch);
         signal(mux_washed);
         wait(mux_print);
         stringCopy(printOne, swLunch);
@@ -380,6 +383,8 @@ void dwarf(string dNum, int intDNum){
     washedUp[intDNum - 1] = 1;
     signal(mux_washed);
     signal(mux_print);
+    // signal the other dwarves they can wash up too
+    wait(s_dAllowSW);
     // signal Snow White that one of the dwarves is washed up
     signal(s_dWashed);
     
@@ -389,6 +394,7 @@ void dwarf(string dNum, int intDNum){
     while(1){ // While True
         wait(s_swLunch);
         wait(mux_print);
+        wait(mux_lunch);
         if(madeLunch[intDNum - 1] != 1){
             // If the incorrect dwarf picks up the response
             signal(mux_print);
@@ -396,6 +402,7 @@ void dwarf(string dNum, int intDNum){
         } else {
             break; // on the correct dwarf
         }
+        signal(mux_lunch);
     }
     stringCopy(printOne, dName);
     stringCopy(printTwo, dNum);
@@ -462,6 +469,7 @@ main(){
     // Initialize mutex semaphores
     initialsem(mux_print, 1);
     initialsem(mux_washed, 1);
+    initialsem(mux_lunch, 1);
 
 
 
