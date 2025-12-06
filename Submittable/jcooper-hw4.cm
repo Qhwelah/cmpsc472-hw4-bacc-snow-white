@@ -1,0 +1,682 @@
+// -------------------------------- //
+// Name : Joseph Cooper             //
+// Email: jdc6281@psu.edu           //
+// Class: CMPSC 472-002, Fall 2025  //
+// -------------------------------- //
+
+
+
+// --- Regular story flow semaphores --- //
+// Semaphors sent by Queen
+binarysem s_qSentH;
+
+// Sent by Huntsman
+binarysem s_hTakeSW;
+binarysem s_hToldSW;
+binarysem s_hStagQ;
+
+// Sent by Old Peddler
+binarysem s_opKnocked;
+binarysem s_opGave;
+
+// Sent by Snow White
+binarysem s_swFollowH;
+binarysem s_swRan;
+binarysem s_swAtDs;
+binarysem s_swExpl;
+semaphore s_swLunch;
+binarysem s_swOpenDoor;
+binarysem s_swComa;
+
+// Sent by Dwarves
+binarysem s_dWakesSW;
+binarysem s_dAllowSW;
+semaphore s_dWashed;
+binarysem s_dsGone;
+binarysem s_dAllBack;
+
+// ------------------------------------ //
+
+
+
+// Trackers for status of dwarves
+int dwarfCount;
+int lunchCount;
+int washedUp[3];
+int madeLunch[3];
+string[1] lunchFor;
+
+
+
+// Mutex semaphors
+binarysem mux_print;
+binarysem mux_washed;
+binarysem mux_lunch;
+
+
+
+// Delay parameter
+int DELAY;
+
+
+
+// Declare dwarf number string variables
+string[1] dOne;
+string[1] dTwo;
+string[1] dThree;
+string[1] dot;
+
+
+
+// Declare story string variables
+string[42] onceUpon;        // Once upon a time, there lived princess SW.
+string[16] toBeCont;        // To be continued.
+
+string[43] qOrder;          // Q orders H take SW into forest and kill SW.
+string[53] qTricked;        // Q realizes H tricked her, decides to kill SW herself.
+string[18] qHide;           // Q disguises as OP.
+
+string[23] opKnocks;        // OP knocks on D's house.
+string[28] opOffers;        // OP offers SW poisoned apple.
+
+string[23] hForest;         // H takes SW into forest.
+string[35] hSWRun;          // H tells Q's plan, lets SW run away.
+string[26] hStag;           // H gives stag's heart to Q.
+
+string[25] swFollowsH;      // SW follows H into forest.
+string[42] swEscapes;       // SW escapes, finds D's house, falls asleep.
+string[32] swExplains;      // SW explains to Ds what happened.
+string[23] swLunch;         // SW prepares lunch for D
+string[38] swListens;       // SW listens to knocking and opens door.
+string[23] swEatsBad;       // SW eats poisoned apple.
+string[19] swComa;          // SW falls into coma.
+
+string[1] dName;            // D
+string[29] dWork;           //  goes to work in the morning.
+string[22] dComeHome;       //  comes home, finds SW.
+string[39] dWakesSW;        //  comes home, finds SW, and wakes SW up.
+string[43] dMaid;           //  lets her stay as housemaid, with other Ds.
+string[18] dWash;           //  washes for lunch.
+string[29] dEats;           //  eats lunch and goes to work.
+string[43] dCallsHome;      //  comes home, finds SW dead, calls other Ds.
+string[12] dComesHome;      //  comes home.
+string[42] dCasket;         //  places SW in glass casket, with other Ds.
+
+
+
+// Print helper temp
+string[53] printOne;        // Max length printOne string is queenTricked, len 53
+string[1] printTwo;         // Man length printTwo is a D number, len 1
+string[43] printThree;      // Max length printThree is dMaid, len 43
+
+
+
+// Print mutex is handled in calling functions
+void printFunc(){
+    if(stringLength(printOne) > 0){
+        cout << printOne;
+    }
+
+    if(stringLength(printTwo) > 0){
+        cout << printTwo;
+    }
+
+    if(stringLength(printThree) > 0){
+        cout << printThree;
+    }
+    
+    cout << endl;
+
+    // Reset print variables
+    stringCopy(printOne, "");
+    stringCopy(printTwo, "");
+    stringCopy(printThree, "");
+}
+
+
+
+void delay() {
+    int i;
+    int DelayTime;
+    DelayTime = random(DELAY);
+    for(i = 0; i < DelayTime; i++);
+}
+
+
+
+void queen(){
+    delay();
+
+    // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
+    // Wait for print mutex
+    wait(mux_print);
+    
+    // In print CS:
+    // Set global print strings
+    stringCopy(printOne, qOrder);
+    
+    // Call print function
+    printFunc();
+
+    // End print CS
+    signal(mux_print);
+    // ----------------------------------------------------- //
+
+    // Singal Huntsman to take Snow White
+    signal(s_qSentH);
+
+
+
+    delay();
+    // Wait for Huntsman to return to Queen
+    wait(s_hStagQ);
+    wait(mux_print);
+    stringCopy(printOne, qTricked);
+    printFunc();
+    signal(mux_print);
+
+
+
+    delay();
+    // Does not require a different semaphor to wait for after qTricked, only a delay
+    wait(mux_print);
+    stringCopy(printOne, qHide);
+    printFunc();
+    signal(mux_print);
+
+    // Queen becomes Old Peddler
+}
+
+
+
+void oldPeddler(){
+    delay();
+    // Wait for all Dwarves to be gone
+    wait(s_dsGone);
+
+    wait(mux_print);
+    stringCopy(printOne, opKnocks);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Snow White that Old Peddler knocked on door
+    signal(s_opKnocked);
+
+
+
+    delay();
+    // Wait for Snow White to open door
+    wait(s_swOpenDoor);
+    
+    wait(mux_print);
+    stringCopy(printOne, opOffers);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Snow White to eat the poisoned apple
+    signal(s_opGave);
+}
+
+
+
+void huntsman(){
+    delay();
+    // Wait for Queen order Huntsman
+    wait(s_qSentH);
+
+    wait(mux_print);
+    stringCopy(printOne, hForest);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Snow White to follow Huntsman
+    signal(s_hTakeSW);
+
+
+
+    delay();
+    // Wait for Snow White to follow Huntsman
+    wait(s_swFollowH);
+
+    wait(mux_print);
+    stringCopy(printOne, hSWRun);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Snow White to run away
+    signal(s_hToldSW);
+
+
+
+    delay();
+    // Wait for SW to run away
+    wait(s_swRan);
+    
+    wait(mux_print);
+    stringCopy(printOne, hStag);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Queen to realize she was tricked
+    signal(s_hStagQ);
+
+}
+
+
+
+void snowWhite(){
+    delay();
+
+    // Wait for Huntsman to take Snow White to forest
+    wait(s_hTakeSW);
+
+    wait(mux_print);
+    stringCopy(printOne, swFollowsH);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Huntsman to tell Snow White Q's plan
+    signal(s_swFollowH);
+
+
+
+    delay();
+    // Wait for Huntsman to tell Snow White to run away
+    wait(s_hToldSW);
+
+    wait(mux_print);
+    stringCopy(printOne, swEscapes);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Huntsman to give the stag's heart to the Queen
+    signal(s_swRan);
+    // Signal Dwarves to begin coming home
+    signal(s_swAtDs);
+
+
+
+    delay();
+    // Wait for Dwarves to wake up Snow White
+    wait(s_dWakesSW);
+
+    wait(mux_print);
+    stringCopy(printOne, swExplains);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Dwarves to let her stay
+    signal(s_swExpl);
+
+
+
+    delay();
+    while(lunchCount < 3){
+        delay();
+        // Wait for Dwarves to wash up for lunch
+        wait(s_dWashed);
+        wait(mux_washed);
+        wait(mux_lunch);
+        // Find out which Dwarf was ready for lunch, make their lunch
+        if(washedUp[0] == 1){
+            stringCopy(lunchFor, "1");
+            washedUp[0] = 0;
+            madeLunch[0] = 1;
+        } else if (washedUp [1] == 1) {
+            stringCopy(lunchFor, "2");
+            washedUp[1] = 0;
+            madeLunch[1] = 1;
+        } else {
+            stringCopy(lunchFor, "3");
+            washedUp[2] = 0;
+            madeLunch[2] = 1;
+        }
+        signal(mux_lunch);
+        signal(mux_washed);
+        wait(mux_print);
+        stringCopy(printOne, swLunch);
+        stringCopy(printTwo, lunchFor);
+        stringCopy(printThree, dot);
+        printFunc();
+        signal(mux_print);
+        lunchCount = lunchCount + 1;
+        
+        // Signal dwarves that a lunch is ready
+        signal(s_swLunch);
+    }  
+
+
+
+    delay();
+    // Wait for Old Peddler to knock on the door
+    wait(s_opKnocked);
+
+    wait(mux_print);
+    stringCopy(printOne, swListens);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Old Peddler to give Snow White the poisoned apple
+    signal(s_swOpenDoor);
+
+
+
+    delay();
+    // Wait for Old Peddler to give Snow White the poisoned apple
+    wait(s_opGave);
+    
+    wait(mux_print);
+    stringCopy(printOne, swEatsBad);
+    printFunc();
+    stringCopy(printOne, swComa);
+    printFunc();
+    signal(mux_print);
+
+    // Signal Dwarves to start coming home
+    signal(s_swComa);
+}
+
+
+
+void dwarf(string dNum, int intDNum){
+    delay();
+    // ---- EXAMPLE PRINT CALL: FEED BY GLOBAL VARIABLE ---- //
+    // Wait for print mutex
+    wait(mux_print);
+    
+    // In print CS:
+    // Set global print strings
+    // NOTE: MULTIPLE STRINGS TO PRINT TOGETHER
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    stringCopy(printThree, dWork);
+    
+    // Call print function
+    printFunc();
+
+    // End print CS
+    signal(mux_print);
+    // ----------------------------------------------------- //
+
+    
+
+    delay();
+    // Wait for Snow White to arrive at Dwarves' house
+    wait(s_swAtDs);
+    wait(mux_print);
+    dwarfCount = dwarfCount + 1;  // Does not need extra mutex since already in print mutex
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    if(dwarfCount < 3){
+        // First two dwarves
+        stringCopy(printThree, dComeHome);
+        signal(s_swAtDs);
+    } else {
+        // Third dwarf
+        stringCopy(printThree, dWakesSW);
+        dwarfCount = 1;
+        // Signal Snow White to explain to the Dwarves
+        signal(s_dWakesSW);
+    }
+    printFunc();
+    signal(mux_print);
+
+
+
+    delay();
+    // Wait for Snow White to explain to the dwarves
+    while(1){ // While True
+        wait(s_swExpl);
+        wait(mux_print);
+        if(dwarfCount != intDNum){
+            // If the incorrect dwarf picks up the response
+            //  Response order must be D1, D2, D3
+            signal(mux_print);
+            signal(s_swExpl);
+        } else {
+            break; // on the correct dwarf
+        }
+    }
+    // on the correct dwarf, still in print mutex
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    stringCopy(printThree, dMaid);
+    printFunc();
+    dwarfCount = dwarfCount + 1;
+    signal(mux_print);
+    // Check which dwarf this is
+    if(dwarfCount <= 3){
+        // If this is not the final dwarf singal the next dwarf to allow SW to stay
+        signal(s_swExpl);
+    } else {    
+        // If this is already the third Dwarf, signal the dwarves to start washing for lunch
+        dwarfCount = 0;
+        signal(s_dAllowSW);
+    }
+
+
+
+    delay();
+    // Wait for the third dwarf to allow Snow White to stay
+    wait(s_dAllowSW);
+    wait(mux_print);
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    stringCopy(printThree, dWash);
+    printFunc();
+    wait(mux_washed);
+    washedUp[intDNum - 1] = 1;
+    signal(mux_washed);
+    signal(mux_print);
+    // signal the other dwarves they can wash up too
+    signal(s_dAllowSW);
+    // signal Snow White that one of the dwarves is washed up
+    signal(s_dWashed);
+    
+
+
+    delay();
+    // Wait for Snow White to make this Dwarf's lunch
+    while(1){ // While True
+        wait(s_swLunch);
+        wait(mux_lunch);
+        if(madeLunch[intDNum - 1] != 1){
+            // If the incorrect dwarf picks up the response
+            signal(mux_lunch);
+            signal(s_swLunch);
+
+        } else {
+            signal(mux_lunch);
+            break; // on the correct dwarf
+        }
+    }
+    wait(mux_print);
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    stringCopy(printThree, dEats);
+    printFunc();
+    dwarfCount = dwarfCount + 1;
+    signal(mux_print);
+    if(dwarfCount >= 3){ 
+        // If this is the third Dwarf, signal the Old Peddler to come to the house
+        dwarfCount = 0;
+        signal(s_dsGone);
+    }
+
+
+
+    delay();
+    // Wait for Snow White to be in a coma
+    wait(s_swComa);
+    wait(mux_print);
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    dwarfCount = dwarfCount + 1;
+    if(dwarfCount == 1){
+        // If this is the first Dwarf to return home, call all other Dwarves home too
+        stringCopy(printThree, dCallsHome);
+        signal(s_swComa);
+    } else {
+        // If this is not the first Dwarf to return, just come home
+        stringCopy(printThree, dComesHome);
+        signal(s_swComa);
+    }
+    printFunc();
+    // If this is the last Dwarf to return home, signal the other Dwarves to put Snow White in the casket
+    if(dwarfCount >= 3) {
+        dwarfCount = 0;
+        signal(s_dAllBack);
+    }
+    signal(mux_print);
+
+
+
+    delay();
+    // Wait for all Dwarves to be back home
+    wait(s_dAllBack);
+    wait(mux_print);
+    stringCopy(printOne, dName);
+    stringCopy(printTwo, dNum);
+    stringCopy(printThree, dCasket);
+    printFunc();
+    signal(mux_print);
+    signal(s_dAllBack);
+}
+
+
+
+main(){
+    // --- Initialize story flow semaphores --- //
+    // Sent by Queen
+    initialsem(s_qSentH, 0);
+
+    // Sent by Huntsman
+    initialsem(s_hTakeSW, 0);
+    initialsem(s_hToldSW, 0);
+    initialsem(s_hStagQ, 0);
+
+    // Sent by Old Peddler
+    initialsem(s_opKnocked, 0);
+    initialsem(s_opGave, 0);
+
+    // Sent by Snow White
+    initialsem(s_swFollowH, 0);
+    initialsem(s_swRan, 0);
+    initialsem(s_swAtDs, 0);
+    initialsem(s_swExpl, 0);
+    initialsem(s_swLunch, 0);
+    initialsem(s_swOpenDoor, 0);
+    initialsem(s_swComa, 0);
+
+    // Sent by Dwarves
+    initialsem(s_dWakesSW, 0);
+    initialsem(s_dAllowSW, 0);
+    initialsem(s_dWashed, 0);
+    initialsem(s_dsGone, 0);
+    initialsem(s_dAllBack, 0);
+
+    // ---------------------------------------- //
+
+
+
+    // dwarf tracker variables
+    dwarfCount = 0;
+    lunchCount = 0;
+    washedUp[0] = 0;
+    washedUp[1] = 0;
+    washedUp[2] = 0;
+    madeLunch[0] = 0;
+    madeLunch[1] = 0;
+    madeLunch[2] = 0;
+    stringCopy(lunchFor, "");
+
+
+
+    // Delay variable
+    DELAY = 50;
+
+
+
+    // Initialize mutex semaphores
+    initialsem(mux_print, 1);
+    initialsem(mux_washed, 1);
+    initialsem(mux_lunch, 1);
+
+
+
+    // Initialize dwarf number values
+    stringCopy(dOne, "1");
+    stringCopy(dTwo, "2");
+    stringCopy(dThree, "3");
+    stringCopy(dot, ".");
+
+
+
+    // Initialize print variables
+    stringCopy(printOne, "");
+    stringCopy(printTwo, "");
+    stringCopy(printThree, "");
+
+
+
+    // Initialize story string contents
+    stringCopy(onceUpon, "Once upon a time, there lived princess SW.");
+    stringCopy(toBeCont, "To be continued.");
+
+    stringCopy(qOrder, "Q orders H take SW into forest and kill SW.");
+    stringCopy(qTricked, "Q realizes H tricked her, decides to kill SW herself.");
+    stringCopy(qHide, "Q disguises as OP.");
+
+    stringCopy(opKnocks, "OP knocks on D's house.");
+    stringCopy(opOffers, "OP offers SW poisoned apple.");
+
+    stringCopy(hForest, "H takes SW into forest.");
+    stringCopy(hSWRun, "H tells Q's plan, lets SW run away.");
+    stringCopy(hStag, "H gives stag's heart to Q.");
+
+    stringCopy(swFollowsH, "SW follows H into forest.");
+    stringCopy(swEscapes, "SW escapes, finds D's house, falls asleep.");
+    stringCopy(swExplains, "SW explains to Ds what happened.");
+    stringCopy(swLunch, "SW prepares lunch for D");
+    stringCopy(swListens, "SW listens to knocking and opens door.");
+    stringCopy(swEatsBad, "SW eats poisoned apple.");
+    stringCopy(swComa, "SW falls into coma.");
+
+    stringCopy(dName, "D");
+    stringCopy(dWork, " goes to work in the morning.");
+    stringCopy(dComeHome, " comes home, finds SW.");
+    stringCopy(dWakesSW, " comes home, finds SW, and wakes SW up.");
+    stringCopy(dMaid, " lets her stay as housemaid, with other Ds.");
+    stringCopy(dWash, " washes for lunch.");
+    stringCopy(dEats, " eats lunch and goes to work.");
+    stringCopy(dCallsHome, " comes home, finds SW dead, calls other Ds.");
+    stringCopy(dComesHome, " comes home.");
+    stringCopy(dCasket, " places SW in glass casket, with other Ds.");
+
+
+
+    // Begin story
+    stringCopy(printOne, onceUpon);
+    printFunc();
+
+    // Begin all concurrent operations
+    cobegin {
+        
+        queen();
+
+        oldPeddler();
+
+        huntsman();
+
+        snowWhite();
+        
+        dwarf(dOne, 1);
+        dwarf(dTwo, 2);
+        dwarf(dThree, 3);
+    
+    }
+
+    // End story
+    stringCopy(printOne, toBeCont);
+    printFunc();
+}
